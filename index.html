@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Yanke Bionics · 28×28 Campaign Command</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..900;1,14..32,400..900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --ink:#271333;--ink2:#1c0e26;--indigo:#5700A3;--slate:#7361FA;--lav:#CAC3FF;
+  --orange:#FA6341;--yellow:#FFDA73;--green:#b0d235;--white:#fff;--body:#ece8f5;--muted:#a99fc4;
+  --card:rgba(255,255,255,.055);--card2:rgba(255,255,255,.085);--line:rgba(202,195,255,.16);
+  --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--font);color:var(--body);background:var(--ink);
+  background-image:radial-gradient(120% 80% at 88% -10%,rgba(250,99,65,.30),transparent 55%),
+    radial-gradient(120% 90% at -10% 110%,rgba(115,97,250,.40),transparent 55%),
+    radial-gradient(100% 60% at 50% 40%,rgba(87,0,163,.16),transparent 70%);
+  background-attachment:fixed;min-height:100vh;line-height:1.5;padding:16px 16px 56px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto}
+.tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+a{color:var(--lav);text-decoration:none}
+button,input,select{font-family:var(--font)}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:12px}
+.badge28{font-style:italic;font-weight:900;font-size:15px;line-height:.92;letter-spacing:-.5px;color:var(--ink);
+  background:var(--yellow);padding:8px 10px;border-radius:10px;box-shadow:0 2px 0 rgba(115,97,250,.6)}
+.brand h1{font-size:15px;font-weight:800}
+.brand .sub{font-size:11.5px;color:var(--muted);font-weight:600}
+.clock{text-align:right;font-size:12px;color:var(--muted);font-weight:600}
+.clock b{display:block;color:var(--white);font-size:13.5px;font-weight:800}
+.phase{display:inline-block;margin-top:3px;font-size:10.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  padding:3px 8px;border-radius:99px;background:var(--card2);border:1px solid var(--line)}
+
+.tabs{position:sticky;top:0;z-index:20;display:flex;gap:6px;padding:8px;margin:0 -4px 16px;
+  background:rgba(28,14,38,.72);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;overflow-x:auto}
+.tab{flex:1;white-space:nowrap;font-weight:800;font-size:12.5px;letter-spacing:.2px;color:var(--muted);
+  background:transparent;border:0;padding:9px 12px;border-radius:9px;cursor:pointer;transition:.15s}
+.tab.on{color:var(--ink);background:var(--yellow)}
+.tab:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+.view{display:none}.view.on{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;backdrop-filter:blur(6px);margin-bottom:14px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--yellow)}
+h2.sec{font-size:13px;font-weight:800;color:var(--white);margin-bottom:2px}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 14px}
+.kpi .n{font-size:clamp(20px,5.5vw,30px);font-weight:900;font-style:italic;color:var(--white);line-height:1}
+.kpi .l{font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-top:7px}
+.kpi.y .n{color:var(--yellow)}.kpi.o .n{color:var(--orange)}.kpi.g .n{color:var(--green)}
+@media(max-width:620px){.kpis{grid-template-columns:repeat(2,1fr)}}
+
+.hero{position:relative;overflow:hidden;background:linear-gradient(150deg,rgba(87,0,163,.55),rgba(39,19,51,.2));border:1px solid rgba(202,195,255,.28)}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 120% at 85% 0%,rgba(250,99,65,.30),transparent 60%);animation:drift 9s ease-in-out infinite alternate;pointer-events:none}
+@keyframes drift{from{transform:translateX(-6%)}to{transform:translateX(6%)}}
+.hero>*{position:relative}
+.hlabel{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.cd{display:flex;gap:8px;margin:12px 0 4px}
+.cd .u{flex:1;background:rgba(28,14,38,.5);border:1px solid var(--line);border-radius:12px;padding:11px 4px;text-align:center}
+.cd .n{font-size:clamp(24px,8vw,40px);font-weight:900;font-style:italic;color:#fff;line-height:1}
+.cd .l{font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:5px}
+.htitle{font-size:clamp(19px,5vw,24px);font-weight:900;font-style:italic;color:#fff;margin-top:6px}
+.hmeta{font-size:12.5px;color:var(--lav);margin-top:5px;font-weight:600}
+.asset{display:inline-block;font-size:12px;font-weight:700;color:var(--body);background:rgba(28,14,38,.55);border:1px solid var(--line);border-radius:8px;padding:5px 9px;margin-top:9px}
+.due{background:var(--orange);color:#2a0f12;font-weight:900;padding:3px 10px;border-radius:99px;font-size:12px;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(250,99,65,.5)}50%{box-shadow:0 0 0 8px rgba(250,99,65,0)}}
+
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btn{border:0;cursor:pointer;font-weight:800;font-size:13.5px;padding:11px 16px;border-radius:99px;color:var(--ink);background:var(--yellow);transition:transform .08s,filter .15s}
+.btn:hover{filter:brightness(1.05)}.btn:active{transform:scale(.97)}
+.btn.alt{background:transparent;color:var(--lav);border:1px solid var(--line)}
+.btn.orange{background:var(--orange);color:#2a0f12}
+.btn:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+
+.chartbox{position:relative;height:280px;margin-top:8px}
+.chartbox.sm{height:240px}
+.note{font-size:11.5px;color:var(--muted);font-weight:600}
+.insight{display:flex;gap:10px;align-items:flex-start;background:rgba(28,14,38,.4);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+.insight .ic{font-size:18px}.insight .t{font-size:12.5px;color:var(--body);font-weight:600}.insight .t b{color:var(--yellow)}
+
+.tl{display:flex;flex-direction:column;gap:8px;max-height:480px;overflow-y:auto;padding-right:4px;margin-top:12px}
+.tl::-webkit-scrollbar{width:8px}.tl::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+.item{display:flex;gap:12px;align-items:flex-start;padding:11px 12px;border-radius:13px;border:1px solid transparent;background:rgba(255,255,255,.03)}
+.item.next{border-color:var(--yellow);background:rgba(255,218,115,.10)}.item.done{opacity:.55}.item.due{border-color:var(--orange)}
+.dot{width:11px;height:11px;border-radius:99px;margin-top:5px;flex:none;background:var(--muted)}
+.item.done .dot{background:var(--green)}.item.next .dot{background:var(--yellow);box-shadow:0 0 0 4px rgba(255,218,115,.18)}.item.due .dot{background:var(--orange)}
+.it-main{flex:1;min-width:0}
+.it-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.it-date{font-size:11.5px;font-weight:800;color:var(--lav)}
+.chip{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:2px 7px;border-radius:99px;background:var(--card2);color:var(--body);border:1px solid var(--line)}
+.chip.v{color:var(--ink);background:var(--slate);border-color:transparent}.chip.k{color:var(--ink);background:var(--yellow);border-color:transparent}
+.chip.eng{color:var(--ink);background:var(--green);border-color:transparent}
+.it-title{font-size:13.5px;font-weight:700;color:#fff;margin-top:3px}
+.it-asset{font-size:11px;color:var(--muted);margin-top:2px}
+.it-act{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.tbtn{font-size:11px;font-weight:800;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--lav);border-radius:8px;padding:5px 9px}
+.tbtn:active{transform:scale(.96)}
+
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.field label{font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--muted)}
+select,input[type=text],input[type=url],input[type=number]{font-weight:700;font-size:14px;color:#fff;background:rgba(28,14,38,.6);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+select:focus,input:focus{outline:2px solid var(--slate);outline-offset:1px}
+.prow{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:rgba(255,255,255,.025)}
+.prow .ph{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pdot{width:10px;height:10px;border-radius:3px}.prow .ph b{font-size:13px;color:#fff}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.nums label{font-size:10px}
+.urlrow{margin-bottom:8px}
+
+.pgrid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.pc{display:flex;gap:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:13px}
+.pc.top{border-color:var(--yellow);background:rgba(255,218,115,.08)}
+.thumb{width:70px;height:70px;border-radius:11px;flex:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(150deg,var(--indigo),var(--ink));border:1px solid var(--line)}
+.thumb .ph{font-style:italic;font-weight:900;color:var(--yellow);font-size:11px;text-align:center;padding:4px;line-height:1.1}
+.pc-main{flex:1;min-width:0}
+.pc-title{font-size:13.5px;font-weight:800;color:#fff}
+.pc-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.pc-tot{font-size:20px;font-weight:900;font-style:italic;color:var(--yellow);line-height:1}
+.plats{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.plat{font-size:10.5px;font-weight:700;color:var(--body);background:rgba(28,14,38,.5);border:1px solid var(--line);border-radius:8px;padding:4px 8px;display:flex;align-items:center;gap:6px}
+.plat .pd{width:8px;height:8px;border-radius:2px}.plat a{font-weight:800;color:var(--lav)}
+
+.bar{height:14px;border-radius:99px;background:rgba(28,14,38,.6);overflow:hidden;border:1px solid var(--line);margin:10px 0}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--yellow));width:0;transition:width .5s ease}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.money{font-size:24px;font-weight:900;font-style:italic;color:#fff}.money b{color:var(--yellow)}
+.inline-fields{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-top:12px}
+.inline-fields .field{flex:1;min-width:120px;margin:0}
+
+.reflink{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(28,14,38,.45);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+.reflink .t{font-size:12.5px;font-weight:700;color:#fff}.reflink .d{font-size:11px;color:var(--muted);word-break:break-all}
+.foot{text-align:center;font-size:11px;color:var(--muted);margin-top:18px;line-height:1.7}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--yellow);color:var(--ink);font-weight:800;font-size:13px;padding:11px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:.25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;color:var(--muted);font-size:12.5px;font-weight:600;padding:26px 10px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <div class="badge28">28<br>28<span style="font-size:11px">×</span></div>
+      <div><h1>Team Yanke Bionics</h1><div class="sub">28×28 Mobility Challenge · Campaign Command</div></div>
+    </div>
+    <div class="clock"><b id="clkTime">—</b><span id="clkDate">—</span><span class="phase" id="phase">—</span></div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab on" data-tab="overview">Overview</button>
+    <button class="tab" data-tab="engage">Engagement</button>
+    <button class="tab" data-tab="schedule">Schedule</button>
+    <button class="tab" data-tab="funds">Fundraising</button>
+  </div>
+
+  <section class="view on" id="v-overview">
+    <div class="kpis">
+      <div class="kpi y"><div class="n tnum" id="kEng">0</div><div class="l">Total engagement</div></div>
+      <div class="kpi"><div class="n tnum" id="kPosts">0</div><div class="l">Posts logged</div></div>
+      <div class="kpi o"><div class="n tnum" id="kAvg">0</div><div class="l">Avg / post</div></div>
+      <div class="kpi g"><div class="n tnum" id="kRaised">$0</div><div class="l">Raised</div></div>
+    </div>
+    <div class="card hero">
+      <div class="hlabel"><span class="eyebrow" id="heroEyebrow">Next post in</span><span id="heroFlag"></span></div>
+      <div class="cd" id="countdown">
+        <div class="u"><div class="n tnum" id="cdD">0</div><div class="l">days</div></div>
+        <div class="u"><div class="n tnum" id="cdH">0</div><div class="l">hrs</div></div>
+        <div class="u"><div class="n tnum" id="cdM">0</div><div class="l">min</div></div>
+        <div class="u"><div class="n tnum" id="cdS">0</div><div class="l">sec</div></div>
+      </div>
+      <div class="htitle" id="heroTitle">—</div>
+      <div class="hmeta" id="heroMeta"></div>
+      <div><span class="asset" id="heroAsset" style="display:none"></span></div>
+      <div class="btns">
+        <button class="btn" id="btnCap">Copy caption</button>
+        <button class="btn alt" id="btnDone">Mark posted</button>
+        <a class="btn orange" id="btnTeam" target="_blank" rel="noopener">Team page ↗</a>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="sec"><span class="eyebrow">Engagement over time</span></h2>
+      <div class="note" id="eotNote" style="margin-top:4px"></div>
+      <div class="chartbox"><canvas id="chartTime"></canvas></div>
+    </div>
+    <div class="card">
+      <h2 class="sec"><span class="eyebrow">Insights</span></h2>
+      <div id="insights" style="margin-top:8px"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-engage">
+    <div class="card">
+      <h2 class="sec"><span class="eyebrow">Log a post</span></h2>
+      <div class="note" style="margin:4px 0 12px">Pick a post, paste each platform's link, and read likes / comments / shares off your phone. Saves instantly.</div>
+      <div class="field"><label for="engPost">Post</label><select id="engPost"></select></div>
+      <div id="platBlocks"></div>
+      <button class="btn" id="btnEngSave">Save engagement</button>
+    </div>
+    <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+      <div class="kpi y"><div class="n tnum" id="kLikes">0</div><div class="l">Likes</div></div>
+      <div class="kpi"><div class="n tnum" id="kComments">0</div><div class="l">Comments</div></div>
+      <div class="kpi o"><div class="n tnum" id="kShares">0</div><div class="l">Shares</div></div>
+    </div>
+    <div class="card">
+      <h2 class="sec"><span class="eyebrow">By platform</span></h2>
+      <div class="chartbox sm"><canvas id="chartPlat"></canvas></div>
+    </div>
+    <div class="card">
+      <h2 class="sec"><span class="eyebrow">By post type</span></h2>
+      <div class="chartbox sm"><canvas id="chartType"></canvas></div>
+    </div>
+    <div class="card">
+      <h2 class="sec"><span class="eyebrow">Posts — ranked by engagement</span></h2>
+      <div class="pgrid" id="postCards"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-schedule">
+    <div class="card">
+      <h2 class="sec"><span class="eyebrow">Posting schedule</span></h2>
+      <div class="note" style="margin-top:4px">Green = done · yellow = up next · orange = due today.</div>
+      <div class="tl" id="timeline"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-funds">
+    <div class="card">
+      <h2 class="sec"><span class="eyebrow">Fundraising</span></h2>
+      <div class="row" style="margin-top:12px">
+        <div class="money">$<b id="raisedEcho">0</b> <span style="font-size:14px;color:var(--muted)">of</span> $<span id="goalEcho">0</span></div>
+        <div class="note" id="pct">0%</div>
+      </div>
+      <div class="bar"><i id="barFill"></i></div>
+      <div class="note" id="lastYearNote"></div>
+      <div class="inline-fields">
+        <div class="field"><label>Raised $</label><input type="number" id="inRaised" min="0" step="50"></div>
+        <div class="field"><label>Goal $</label><input type="number" id="inGoal" min="0" step="500"></div>
+        <button class="btn" id="btnSave">Update</button>
+      </div>
+      <div class="note" id="saveNote" style="margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <h2 class="sec"><span class="eyebrow">Raised over time</span></h2>
+      <div class="note" style="margin:4px 0">Tap "Log today's total" whenever you check, to draw the curve.</div>
+      <div class="chartbox sm"><canvas id="chartFund"></canvas></div>
+      <button class="btn alt" id="btnLogFund" style="margin-top:12px">Log today's total</button>
+    </div>
+    <div class="card">
+      <h2 class="sec"><span class="eyebrow">Quick reference</span></h2>
+      <div class="reflink"><div><div class="t">Team page</div><div class="d" id="refUrl"></div></div><button class="tbtn" data-copy="url">Copy</button></div>
+      <div class="reflink"><div><div class="t">Hashtags</div><div class="d" id="refTags"></div></div><button class="tbtn" data-copy="tags">Copy</button></div>
+      <div class="reflink"><div><div class="t">Tag</div><div class="d">@soeverybodycanmove · @sebcmohio · @amputeecoalition</div></div><button class="tbtn" data-copy="handles">Copy</button></div>
+    </div>
+  </section>
+
+  <div class="foot">Live · reads your device clock · all times local. Edit the <b>CONFIG</b> block at the top of the file to change anything.</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const CONFIG={
+  teamUrl:'https://charity.pledgeit.org/t/cdyg9rpsjh',
+  goalDefault:8000, lastYear:7710,
+  hashtags:'#28x28Challenge #SoEveryBODYCanMove #MobilityMatters #DisabilityPrideMonth #YankeBionics',
+  handles:'@soeverybodycanmove @sebcmohio @amputeecoalition',
+  launch:'2026-07-01', finish:'2026-07-28', postTime:'08:00',
+  platforms:[{k:'ig',name:'Instagram',c:'#FA6341'},{k:'fb',name:'Facebook',c:'#7361FA'},{k:'li',name:'LinkedIn',c:'#CAC3FF'},{k:'tt',name:'TikTok',c:'#FFDA73'}],
+  teasers:[
+    {date:'2026-06-17',time:'09:00',phase:'Teaser',video:true,title:'Teaser 1 — "Something\u2019s Coming"',asset:'28x28_teaser_A_coming.mp4',
+     caption:'Something\u2019s coming this July. \uD83D\uDC40\nTeam Yanke Bionics is gearing up \u2014 28 days, 28 minutes a day, one mission.\nStay tuned. \uD83D\uDC9A\uD83D\uDFE3\n#28x28Challenge #SoEveryBODYCanMove #MobilityMatters #YankeBionics'},
+    {date:'2026-06-24',time:'09:00',phase:'Teaser',video:true,title:'Teaser 2 — "28 Days. 28 Minutes."',asset:'28x28_teaser_B_numbers.mp4',
+     caption:'Here\u2019s what\u2019s coming: the 28\u00d728 Mobility Challenge. \uD83D\uDCC5\n28 minutes of movement a day, all July, for access to mobility care \u2014 movement is a right, not a privilege.\nTeam Yanke Bionics is back, whole company in. Sign-up details this week. \uD83D\uDC5F\n#28x28Challenge #SoEveryBODYCanMove #MobilityMatters #DisabilityPrideMonth #YankeBionics'},
+    {date:'2026-07-01',time:'08:00',phase:'Launch',video:true,title:'Day 1 — Launch (Teaser 3)',asset:'28x28_teaser_C_getready.mp4',
+     caption:'It\u2019s here. \uD83C\uDF89 The 28\u00d728 Mobility Challenge starts TODAY.\n2nd in the country last year \u2014 going all-in this time.\nJoin, pledge, or cheer us on: \uD83D\uDD17 link in bio\nLet\u2019s move. \uD83D\uDC9A\uD83D\uDFE3\n#28x28Challenge #SoEveryBODYCanMove #MobilityMatters #DisabilityPrideMonth #YankeBionics'},
+  ],
+  rotation:[
+    {t:'Move With Us',cap:'Today\u2019s 28, done. \uD83D\uDC5F Walk, roll, lift, dance \u2014 it all counts. Tag us in yours. \uD83D\uDD17 link in bio'},
+    {t:'The Why',cap:'Why we move: mobility devices get denied as \u201cnot medically necessary.\u201d We build them \u2014 and we\u2019re moving to change that. \uD83D\uDD17 link in bio'},
+    {t:'Team Spotlight',cap:'Meet a teammate taking on the 28\u00d728. \uD83D\uDC9A This is why we move. Join us \u2014 \uD83D\uDD17 link in bio'},
+    {t:'Behind the Build',cap:'Inside the lab. We build the devices that keep people moving \u2014 this month we move for the people who use them. \uD83D\uDD17 link in bio'},
+    {t:'Movement Tip',cap:'No gym needed for your 28. Park farther, take the stairs, dance in the kitchen. Every minute counts. \uD83D\uDD17 link in bio'},
+  ],
+};
+
+const mem={}; const store={get(k){try{return localStorage.getItem(k)}catch(e){return (k in mem)?mem[k]:null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){mem[k]=v}}};
+let storageWorks=true;try{localStorage.setItem('__t','1');localStorage.removeItem('__t')}catch(e){storageWorks=false}
+
+function mkDate(date,time){const[Y,M,D]=date.split('-').map(Number);const[h,m]=time.split(':').map(Number);return new Date(Y,M-1,D,h,m,0)}
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+const SCHEDULE=[];
+CONFIG.teasers.forEach(t=>SCHEDULE.push({...t,id:t.date,dt:mkDate(t.date,t.time)}));
+let rotIdx=0;
+for(let day=2;day<=28;day++){
+  const date='2026-07-'+String(day).padStart(2,'0');const dd=mkDate(date,CONFIG.postTime);const dow=dd.getDay();
+  let title,phase,video=false,cap;
+  if(day===28){title='Finish — "We Did It"';phase='Finish';video=true;cap='That\u2019s a wrap on 28\u00d728! \uD83C\uDF89 Thank you to everyone who moved, gave, and shared. Final total + recap coming. \uD83D\uDC9A\uD83D\uDFE3 \uD83D\uDD17 link in bio';}
+  else if(dow===0){title='Weekly Recap';phase='Recap';cap='Week recap! \uD83D\uDCCA Minutes moved, dollars raised, momentum building. Still time to join. \uD83D\uDD17 link in bio';}
+  else{const r=CONFIG.rotation[rotIdx%CONFIG.rotation.length];rotIdx++;title=r.t;phase='Post';cap=r.cap;video=(dow===1||dow===3||dow===5);}
+  SCHEDULE.push({id:date,date,time:CONFIG.postTime,phase,title,video,asset:null,caption:cap+'\n'+CONFIG.hashtags,dt:dd});
+}
+SCHEDULE.sort((a,b)=>a.dt-b.dt);
+const byId=Object.fromEntries(SCHEDULE.map(s=>[s.id,s]));
+const launchDt=mkDate(CONFIG.launch,'00:00'), finishDt=mkDate(CONFIG.finish,'23:59');
+
+function getEng(){try{return JSON.parse(store.get('engagement')||'{}')}catch(e){return {}}}
+function setEng(o){store.set('engagement',JSON.stringify(o))}
+function postTotals(id){const e=getEng()[id]||{};let l=0,c=0,s=0;CONFIG.platforms.forEach(p=>{const d=e[p.k];if(d){l+=+d.l||0;c+=+d.c||0;s+=+d.s||0}});return{l,c,s,total:l+c+s}}
+function hasEng(id){const t=postTotals(id);const e=getEng()[id]||{};const anyUrl=CONFIG.platforms.some(p=>e[p.k]&&e[p.k].u);return t.total>0||anyUrl}
+
+const $=id=>document.getElementById(id);
+const dowS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],monS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmtDate=d=>dowS[d.getDay()]+' '+monS[d.getMonth()]+' '+d.getDate();
+const fmtTime=d=>{let h=d.getHours(),m=d.getMinutes(),ap=h<12?'AM':'PM';h=h%12||12;return h+':'+String(m).padStart(2,'0')+' '+ap};
+const nfmt=n=>n.toLocaleString();
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1600)}
+function copy(text,msg){const ok=()=>toast(msg||'Copied');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(ok).catch(fb)}else fb();function fb(){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy');ok()}catch(e){}t.remove()}}
+function isPostedManually(s){return store.get('posted:'+s.date)==='1'}
+function isDone(s,now){if(isPostedManually(s))return true;const e=new Date(s.dt);e.setHours(23,59,59);return now>e}
+function isDueToday(s,now){return ymd(s.dt)===ymd(now)&&now>=s.dt&&!isPostedManually(s)}
+let current=null;
+function pickCurrent(now){const due=SCHEDULE.find(s=>isDueToday(s,now));if(due)return{item:due,due:true};const up=SCHEDULE.find(s=>!isDone(s,now)&&s.dt>now);return up?{item:up,due:false}:{item:null,due:false}}
+
+function tick(){
+  const now=new Date();
+  $('clkTime').textContent=fmtTime(now);$('clkDate').textContent=fmtDate(now)+', '+now.getFullYear();
+  let phase='Pre-launch';if(now>finishDt)phase='Complete';else if(now>=launchDt)phase='Live · July';else if(now>=mkDate('2026-06-17','00:00'))phase='Teaser run';
+  $('phase').textContent=phase;
+  const sel=pickCurrent(now);current=sel.item;const over=now>finishDt;
+  if(!current){
+    $('heroEyebrow').textContent=over?'Campaign complete':'All caught up';
+    $('heroTitle').textContent=over?'\uD83C\uDF89 28×28 complete — great work':'Nothing scheduled';
+    $('heroMeta').textContent=over?'Post your thank-you + recap, then archive.':'';
+    $('countdown').style.display='none';$('heroAsset').style.display='none';
+    $('btnCap').style.display=$('btnDone').style.display='none';$('heroFlag').innerHTML='';
+  }else{
+    $('heroTitle').textContent=current.title;
+    $('heroMeta').textContent=fmtDate(current.dt)+' · '+fmtTime(current.dt)+'  ·  '+current.phase;
+    $('btnCap').style.display=$('btnDone').style.display='';
+    if(current.asset){$('heroAsset').style.display='';$('heroAsset').textContent='\uD83C\uDFAC '+current.asset}else $('heroAsset').style.display='none';
+    if(sel.due){$('countdown').style.display='none';$('heroEyebrow').textContent='Post this today';$('heroFlag').innerHTML='<span class="due">DUE NOW</span>';}
+    else{$('countdown').style.display='flex';$('heroEyebrow').textContent='Next post in';$('heroFlag').innerHTML='';
+      const diff=current.dt-now;$('cdD').textContent=Math.floor(diff/864e5);$('cdH').textContent=Math.floor(diff/36e5)%24;$('cdM').textContent=Math.floor(diff/6e4)%60;$('cdS').textContent=Math.floor(diff/1e3)%60;}
+  }
+}
+
+function renderKPIs(){
+  let l=0,c=0,s=0,posts=0;
+  SCHEDULE.forEach(p=>{if(hasEng(p.id)){const t=postTotals(p.id);l+=t.l;c+=t.c;s+=t.s;posts++;}});
+  const total=l+c+s;
+  $('kEng').textContent=nfmt(total);$('kPosts').textContent=posts;$('kAvg').textContent=posts?nfmt(Math.round(total/posts)):'0';
+  $('kLikes').textContent=nfmt(l);$('kComments').textContent=nfmt(c);$('kShares').textContent=nfmt(s);
+  $('kRaised').textContent='$'+nfmt(loadMoney().raised);
+}
+function renderTimeline(){
+  const now=new Date();const tl=$('timeline');tl.innerHTML='';
+  SCHEDULE.forEach((s,i)=>{
+    const done=isDone(s,now),due=isDueToday(s,now),isNext=current&&s===current&&!due;
+    const tot=postTotals(s.id).total;
+    const el=document.createElement('div');
+    el.className='item'+(done?' done':'')+(isNext?' next':'')+(due?' due':'');
+    const chips=`<span class="chip ${(s.phase==='Teaser'||s.phase==='Launch')?'k':''}">${s.phase}</span>`+(s.video?'<span class="chip v">Video</span>':'')+(tot>0?`<span class="chip eng">${nfmt(tot)} eng</span>`:'');
+    el.innerHTML=`<div class="dot"></div><div class="it-main">
+      <div class="it-top"><span class="it-date">${fmtDate(s.dt)}</span>${chips}</div>
+      <div class="it-title">${s.title}</div>${s.asset?`<div class="it-asset">\uD83C\uDFAC ${s.asset}</div>`:''}
+      <div class="it-act"><button class="tbtn" data-cap="${i}">Copy caption</button>
+      ${done?`<button class="tbtn" data-undo="${i}">Undo</button>`:`<button class="tbtn" data-mark="${i}">Mark posted</button>`}
+      <button class="tbtn" data-log="${s.id}">Log engagement</button></div></div>`;
+    tl.appendChild(el);
+  });
+}
+function platBlocksHTML(id){
+  const e=getEng()[id]||{};
+  return CONFIG.platforms.map(p=>{const d=e[p.k]||{};return `
+   <div class="prow">
+     <div class="ph"><span class="pdot" style="background:${p.c}"></span><b>${p.name}</b></div>
+     <div class="urlrow"><input type="url" placeholder="Post link (https://…)" data-f="${p.k}-u" value="${d.u?d.u.replace(/"/g,'&quot;'):''}"></div>
+     <div class="nums">
+       <label>Likes<input type="number" min="0" data-f="${p.k}-l" value="${d.l||''}"></label>
+       <label>Comments<input type="number" min="0" data-f="${p.k}-c" value="${d.c||''}"></label>
+       <label>Shares<input type="number" min="0" data-f="${p.k}-s" value="${d.s||''}"></label>
+     </div>
+   </div>`}).join('');
+}
+function renderEngEditor(keepSel){
+  const sel=$('engPost');const prev=keepSel||sel.value;
+  sel.innerHTML=SCHEDULE.map(s=>`<option value="${s.id}">${fmtDate(s.dt)} — ${s.title.replace(/"/g,'')}${hasEng(s.id)?'  ✓':''}</option>`).join('');
+  if(prev&&byId[prev])sel.value=prev; else if(current)sel.value=current.id;
+  $('platBlocks').innerHTML=platBlocksHTML(sel.value);
+}
+function renderPostCards(){
+  const logged=SCHEDULE.filter(p=>hasEng(p.id)).map(p=>({p,t:postTotals(p.id)})).sort((a,b)=>b.t.total-a.t.total);
+  const box=$('postCards');
+  if(!logged.length){box.innerHTML='<div class="empty">No engagement logged yet. Log your first post above and this fills with ranked cards + charts.</div>';return;}
+  const e=getEng();
+  box.innerHTML=logged.map(({p,t},idx)=>{
+    const ed=e[p.id]||{};
+    const plats=CONFIG.platforms.filter(pl=>ed[pl.k]&&((+ed[pl.k].l||0)+(+ed[pl.k].c||0)+(+ed[pl.k].s||0)>0||ed[pl.k].u)).map(pl=>{
+      const d=ed[pl.k];const sum=(+d.l||0)+(+d.c||0)+(+d.s||0);
+      return `<span class="plat"><span class="pd" style="background:${pl.c}"></span>${pl.name} ${nfmt(sum)}${d.u?` · <a href="${d.u}" target="_blank" rel="noopener">view ↗</a>`:''}</span>`;
+    }).join('');
+    return `<div class="pc ${idx===0?'top':''}">
+      <div class="thumb"><div class="ph">${p.phase}</div></div>
+      <div class="pc-main">
+        <div class="row"><div><div class="pc-title">${p.title}</div><div class="pc-sub">${fmtDate(p.dt)}${idx===0?' · 🏆 top post':''}</div></div>
+        <div class="pc-tot">${nfmt(t.total)}</div></div>
+        <div class="plats">${plats||'<span class="note">link saved, no numbers yet</span>'}</div>
+      </div></div>`;
+  }).join('');
+}
+function renderInsights(){
+  const box=$('insights');const out=[];
+  const logged=SCHEDULE.filter(p=>hasEng(p.id));
+  if(!logged.length){box.innerHTML='<div class="empty">Insights appear once you\u2019ve logged a few posts.</div>';return;}
+  let top=null;logged.forEach(p=>{const t=postTotals(p.id).total;if(!top||t>top.t){top={p,t}}});
+  if(top&&top.t>0)out.push(['\uD83C\uDFC6',`Top post: <b>${top.p.title}</b> with <b>${nfmt(top.t)}</b> engagements.`]);
+  const pl={};CONFIG.platforms.forEach(p=>pl[p.k]=0);const e=getEng();
+  Object.values(e).forEach(d=>CONFIG.platforms.forEach(p=>{if(d[p.k])pl[p.k]+=(+d[p.k].l||0)+(+d[p.k].c||0)+(+d[p.k].s||0)}));
+  const bestP=CONFIG.platforms.map(p=>({p,v:pl[p.k]})).sort((a,b)=>b.v-a.v)[0];
+  if(bestP&&bestP.v>0)out.push(['\uD83D\uDCCD',`<b>${bestP.p.name}</b> is your strongest channel so far (<b>${nfmt(bestP.v)}</b> total).`]);
+  let vt=0,vn=0,st=0,sn=0;logged.forEach(p=>{const t=postTotals(p.id).total;if(p.video){vt+=t;vn++}else{st+=t;sn++}});
+  if(vn&&sn){const va=Math.round(vt/vn),sa=Math.round(st/sn);out.push(['\uD83C\uDFAC',`Video averages <b>${nfmt(va)}</b>/post vs <b>${nfmt(sa)}</b> for static \u2014 ${va>=sa?'lean into video.':'static is holding its own.'}`]);}
+  box.innerHTML=out.map(([ic,t])=>`<div class="insight"><div class="ic">${ic}</div><div class="t">${t}</div></div>`).join('');
+}
+
+let chTime,chPlat,chType,chFund;
+const haveChart=typeof Chart!=='undefined';
+if(haveChart){Chart.defaults.color='#a99fc4';Chart.defaults.font.family="'Inter',sans-serif";Chart.defaults.font.weight='600';}
+function gridOpts(){return{grid:{color:'rgba(202,195,255,.10)'},ticks:{color:'#a99fc4'}}}
+function noChartMsg(elId){const c=$(elId);if(c)c.parentElement.innerHTML='<div class="empty">Charts load when online. Reopen with a connection to see them.</div>';}
+function renderCharts(){
+  if(!haveChart){['chartTime','chartPlat','chartType','chartFund'].forEach(noChartMsg);return;}
+  const e=getEng();const logged=SCHEDULE.filter(p=>hasEng(p.id));
+  const labels=logged.map(p=>monS[p.dt.getMonth()]+' '+p.dt.getDate());
+  const ds=CONFIG.platforms.map(p=>({label:p.name,backgroundColor:p.c,borderRadius:6,
+    data:logged.map(post=>{const d=(e[post.id]||{})[p.k];return d?((+d.l||0)+(+d.c||0)+(+d.s||0)):0})}));
+  $('eotNote').textContent=logged.length?`${logged.length} post${logged.length>1?'s':''} logged`:'';
+  if(chTime)chTime.destroy();
+  if(logged.length){
+    chTime=new Chart($('chartTime'),{type:'bar',data:{labels,datasets:ds},
+      options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+        plugins:{legend:{labels:{boxWidth:12,boxHeight:12,usePointStyle:true,pointStyle:'circle'}}},
+        scales:{x:{stacked:true,...gridOpts()},y:{stacked:true,beginAtZero:true,...gridOpts()}}}});
+  }else{
+    chTime=new Chart($('chartTime'),{type:'bar',data:{labels:['—'],datasets:[{data:[0],backgroundColor:'rgba(255,255,255,.08)'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:gridOpts(),y:{beginAtZero:true,...gridOpts()}}}});
+  }
+  const pv=CONFIG.platforms.map(p=>{let s=0;Object.values(e).forEach(d=>{if(d[p.k])s+=(+d[p.k].l||0)+(+d[p.k].c||0)+(+d[p.k].s||0)});return s});
+  if(chPlat)chPlat.destroy();
+  chPlat=new Chart($('chartPlat'),{type:'doughnut',
+    data:{labels:CONFIG.platforms.map(p=>p.name),datasets:[{data:pv.some(v=>v)?pv:[1,1,1,1],backgroundColor:CONFIG.platforms.map(p=>p.c),borderColor:'rgba(28,14,38,.6)',borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'right',labels:{boxWidth:12,usePointStyle:true,pointStyle:'circle'}}}}});
+  const types={};logged.forEach(p=>{const t=postTotals(p.id).total;if(!types[p.phase])types[p.phase]={s:0,n:0};types[p.phase].s+=t;types[p.phase].n++});
+  const tl=Object.keys(types),tv=tl.map(k=>Math.round(types[k].s/types[k].n));
+  if(chType)chType.destroy();
+  chType=new Chart($('chartType'),{type:'bar',
+    data:{labels:tl.length?tl:['—'],datasets:[{label:'Avg engagement',data:tv.length?tv:[0],backgroundColor:'#FFDA73',borderRadius:6}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,...gridOpts()},y:gridOpts()}}});
+  renderFundChart();
+}
+function getFundHist(){try{return JSON.parse(store.get('fundHistory')||'[]')}catch(e){return[]}}
+function renderFundChart(){
+  if(!haveChart)return;const h=getFundHist();
+  if(chFund)chFund.destroy();
+  chFund=new Chart($('chartFund'),{type:'line',
+    data:{labels:h.length?h.map(x=>{const d=new Date(x.d);return monS[d.getMonth()]+' '+d.getDate()}):['—'],
+      datasets:[{label:'Raised',data:h.length?h.map(x=>x.a):[0],borderColor:'#FFDA73',backgroundColor:'rgba(250,99,65,.18)',fill:true,tension:.3,pointBackgroundColor:'#FA6341',pointRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:gridOpts(),y:{beginAtZero:true,...gridOpts()}}}});
+}
+
+function loadMoney(){const r=store.get('raised'),g=store.get('goal');return{raised:r!==null?+r:0,goal:g!==null?+g:CONFIG.goalDefault}}
+function renderMoney(){
+  const{raised,goal}=loadMoney();
+  $('raisedEcho').textContent=nfmt(raised);$('goalEcho').textContent=nfmt(goal);
+  const pct=goal>0?Math.min(100,Math.round(raised/goal*100)):0;$('pct').textContent=pct+'%';$('barFill').style.width=pct+'%';
+  $('inRaised').value=raised;$('inGoal').value=goal;
+  $('lastYearNote').innerHTML=raised>=CONFIG.lastYear
+    ?'\uD83C\uDF89 Past last year\u2019s $'+nfmt(CONFIG.lastYear)+' \u2014 raise the goal and announce it!'
+    :'Last year: $'+nfmt(CONFIG.lastYear)+' (2nd in the country). $'+nfmt(Math.max(0,CONFIG.lastYear-raised))+' to beat it.';
+}
+
+function renderData(){renderKPIs();renderTimeline();renderPostCards();renderInsights();renderMoney();renderCharts();}
+
+$('refUrl').textContent=CONFIG.teamUrl;$('refTags').textContent=CONFIG.hashtags;$('btnTeam').href=CONFIG.teamUrl;
+$('saveNote').textContent=storageWorks?'Saved on this device. Persists when deployed (e.g. GitHub Pages).':'Preview note: saving is in-memory here; it persists once opened as a real page.';
+
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));$('v-'+t.dataset.tab).classList.add('on');
+  if(t.dataset.tab==='engage')renderEngEditor();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+$('btnCap').onclick=()=>{if(current&&current.caption)copy(current.caption,'Caption copied')};
+$('btnDone').onclick=()=>{if(current){store.set('posted:'+current.date,'1');toast('Marked posted');tick();renderData()}};
+$('engPost').onchange=()=>{$('platBlocks').innerHTML=platBlocksHTML($('engPost').value)};
+$('btnEngSave').onclick=()=>{
+  const id=$('engPost').value;const e=getEng();const rec=e[id]||{};
+  CONFIG.platforms.forEach(p=>{
+    const u=document.querySelector(`[data-f="${p.k}-u"]`).value.trim();
+    const l=+document.querySelector(`[data-f="${p.k}-l"]`).value||0;
+    const c=+document.querySelector(`[data-f="${p.k}-c"]`).value||0;
+    const s=+document.querySelector(`[data-f="${p.k}-s"]`).value||0;
+    if(u||l||c||s)rec[p.k]={u,l,c,s};else delete rec[p.k];
+  });
+  e[id]=rec;setEng(e);toast('Engagement saved');renderData();renderEngEditor(id);
+};
+$('btnSave').onclick=()=>{store.set('raised',String(Math.max(0,+$('inRaised').value||0)));store.set('goal',String(Math.max(0,+$('inGoal').value||0)));renderMoney();renderKPIs();toast('Updated')};
+$('btnLogFund').onclick=()=>{const{raised}=loadMoney();const h=getFundHist();const today=ymd(new Date());const i=h.findIndex(x=>x.d===today);if(i>=0)h[i].a=raised;else h.push({d:today,a:raised});store.set('fundHistory',JSON.stringify(h));renderFundChart();toast('Logged $'+nfmt(raised))};
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.cap!==undefined)copy(SCHEDULE[+b.dataset.cap].caption,'Caption copied');
+  if(b.dataset.mark!==undefined){store.set('posted:'+SCHEDULE[+b.dataset.mark].date,'1');tick();renderData();toast('Marked posted')}
+  if(b.dataset.undo!==undefined){store.set('posted:'+SCHEDULE[+b.dataset.undo].date,'0');tick();renderData();toast('Reopened')}
+  if(b.dataset.log!==undefined){document.querySelector('.tab[data-tab="engage"]').click();renderEngEditor(b.dataset.log);window.scrollTo({top:0,behavior:'smooth'})}
+  if(b.dataset.copy==='url')copy(CONFIG.teamUrl,'Link copied');
+  if(b.dataset.copy==='tags')copy(CONFIG.hashtags,'Hashtags copied');
+  if(b.dataset.copy==='handles')copy(CONFIG.handles,'Handles copied');
+});
+
+tick();renderEngEditor();renderData();
+setInterval(tick,1000);
+</script>
+</body>
+</html>
