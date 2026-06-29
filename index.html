@@ -122,6 +122,7 @@ select:focus,input:focus{outline:2px solid var(--slate);outline-offset:1px}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--yellow);color:var(--ink);font-weight:800;font-size:13px;padding:11px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:.25s;z-index:50}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .empty{text-align:center;color:var(--muted);font-size:12.5px;font-weight:600;padding:26px 10px}
+body:not(.admin) .admin-only{display:none!important}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -158,8 +159,8 @@ select:focus,input:focus{outline:2px solid var(--slate);outline-offset:1px}
       <div class="htitle" id="heroTitle">—</div>
       <div class="hmeta" id="heroMeta"></div>
       <div><span class="asset" id="heroAsset" style="display:none"></span></div>
-      <div class="btns"><button class="btn" id="btnCap">Copy caption</button>
-        <button class="btn alt" id="btnDone">Mark posted</button>
+      <div class="btns"><button class="btn admin-only" id="btnCap">Copy caption</button>
+        <button class="btn alt admin-only" id="btnDone">Mark posted</button>
         <a class="btn orange" id="btnTeam" target="_blank" rel="noopener">Team page ↗</a></div>
     </div>
     <div class="card"><h2 class="sec"><span class="eyebrow">Engagement over time</span></h2>
@@ -168,7 +169,7 @@ select:focus,input:focus{outline:2px solid var(--slate);outline-offset:1px}
   </section>
 
   <section class="view" id="v-engage">
-    <div class="card"><h2 class="sec"><span class="eyebrow">Log a post</span></h2>
+    <div class="card admin-only"><h2 class="sec"><span class="eyebrow">Log a post</span></h2>
       <div class="note" style="margin:4px 0 12px">Pick a post, paste each platform's link, and read likes / comments / shares off your phone. Saves instantly.</div>
       <div class="field"><label for="engPost">Post</label><select id="engPost"></select></div>
       <div id="platBlocks"></div><button class="btn" id="btnEngSave">Save engagement</button></div>
@@ -192,19 +193,19 @@ select:focus,input:focus{outline:2px solid var(--slate);outline-offset:1px}
     <div class="card"><h2 class="sec"><span class="eyebrow">Fundraising</span></h2>
       <div class="row" style="margin-top:12px"><div class="money">$<b id="raisedEcho">0</b> <span style="font-size:14px;color:var(--muted)">of</span> $<span id="goalEcho">0</span></div><div class="note" id="pct">0%</div></div>
       <div class="bar"><i id="barFill"></i></div><div class="note" id="lastYearNote"></div>
-      <div class="inline-fields"><div class="field"><label>Raised $</label><input type="number" id="inRaised" min="0" step="50"></div>
+      <div class="inline-fields admin-only"><div class="field"><label>Raised $</label><input type="number" id="inRaised" min="0" step="50"></div>
         <div class="field"><label>Goal $</label><input type="number" id="inGoal" min="0" step="500"></div>
         <button class="btn" id="btnSave">Update</button></div>
-      <div class="note" id="saveNote" style="margin-top:10px"></div></div>
-    <div class="card"><h2 class="sec"><span class="eyebrow">Share with Neil</span></h2>
+      <div class="note admin-only" id="saveNote" style="margin-top:10px"></div></div>
+    <div class="card admin-only"><h2 class="sec"><span class="eyebrow">Share with Neil</span></h2>
       <div class="note" style="margin:4px 0 12px">Send him the page link — he sees whatever you last published. To update his view: log your numbers above, tap <b>Publish</b>, paste the copied line into <b>index.html</b> (replace the <b>const LIVE =</b> line near the top) and commit.</div>
       <button class="btn" id="btnPublish">Publish for Neil</button>
       <div class="note" id="pubNote" style="margin-top:10px"></div></div>
     <div class="card"><h2 class="sec"><span class="eyebrow">Raised over time</span></h2>
-      <div class="note" style="margin:4px 0">Tap "Log today's total" whenever you check, to draw the curve.</div>
+      <div class="note admin-only" style="margin:4px 0">Tap "Log today's total" whenever you check, to draw the curve.</div>
       <div class="chartbox sm"><canvas id="chartFund"></canvas></div>
-      <button class="btn alt" id="btnLogFund" style="margin-top:12px">Log today's total</button></div>
-    <div class="card"><h2 class="sec"><span class="eyebrow">Quick templates</span></h2>
+      <button class="btn alt admin-only" id="btnLogFund" style="margin-top:12px">Log today's total</button></div>
+    <div class="card admin-only"><h2 class="sec"><span class="eyebrow">Quick templates</span></h2>
       <div class="note" style="margin-top:4px">Fire these the moment they happen — fill the [brackets].</div>
       <div class="reflink"><div><div class="t">🚨 Goal raised</div><div class="d">When you beat the goal and bump it up</div></div><button class="tbtn" data-tpl="raise">Copy</button></div>
       <div class="reflink"><div><div class="t">🎉 Milestone</div><div class="d">Crossed a round number</div></div><button class="tbtn" data-tpl="mile">Copy</button></div>
@@ -226,7 +227,7 @@ const HT='#28x28Challenge #SoEveryBODYCanMove #MobilityMatters #DisabilityPrideM
    his view. In the dashboard: log your numbers, tap "Publish for Neil,"
    paste what it copies over the line below, and commit. Done.
    ===================================================================== */
-const LIVE = { updated:null, raised:null, goal:null, eng:null, posts:null };
+const LIVE = { updated:null, raised:null, goal:null, eng:null, posts:null, data:null };
 const CONFIG={
   teamUrl:'https://charity.pledgeit.org/t/cdyg9rpsjh', goalDefault:8000, lastYear:7710,
   hashtags:HT, handles:'@soeverybodycanmove @sebcmohio @amputeecoalition',
@@ -311,7 +312,7 @@ SCHEDULE.sort((a,b)=>a.dt-b.dt);
 const byId=Object.fromEntries(SCHEDULE.map(s=>[s.id,s]));
 const launchDt=mkDate(CONFIG.launch,'00:00'), finishDt=mkDate(CONFIG.finish,'23:59');
 
-function getEng(){try{return JSON.parse(store.get('engagement')||'{}')}catch(e){return {}}}
+function getEng(){const ls=store.get('engagement');if(ls!=null){try{return JSON.parse(ls)}catch(e){}}return (LIVE.data&&LIVE.data.engagement)||{}}
 function setEng(o){store.set('engagement',JSON.stringify(o))}
 function postTotals(id){const e=getEng()[id]||{};let l=0,c=0,s=0;CONFIG.platforms.forEach(p=>{const d=e[p.k];if(d){l+=+d.l||0;c+=+d.c||0;s+=+d.s||0}});return{l,c,s,total:l+c+s}}
 function hasEng(id){const t=postTotals(id);const e=getEng()[id]||{};return t.total>0||CONFIG.platforms.some(p=>e[p.k]&&e[p.k].u)}
@@ -323,7 +324,7 @@ const fmtTime=d=>{let h=d.getHours(),m=d.getMinutes(),ap=h<12?'AM':'PM';h=h%12||
 const nfmt=n=>n.toLocaleString();
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1600)}
 function copy(text,msg){const ok=()=>toast(msg||'Copied');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(ok).catch(fb)}else fb();function fb(){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy');ok()}catch(e){}t.remove()}}
-function isPostedManually(s){return store.get('posted:'+s.id)==='1'}
+function isPostedManually(s){const v=store.get('posted:'+s.id);if(v!=null)return v==='1';return !!(LIVE.data&&LIVE.data.posted&&LIVE.data.posted.indexOf(s.id)>-1)}
 function isDone(s,now){if(isPostedManually(s))return true;const e=new Date(s.dt);e.setHours(23,59,59);return now>e}
 function isDueToday(s,now){return ymd(s.dt)===ymd(now)&&now>=s.dt&&!isPostedManually(s)}
 let current=null;
@@ -373,7 +374,7 @@ function renderTimeline(){
       <div class="it-title">${s.title}</div>
       <div class="it-cap">${s.caption.split('\n')[0]}</div>
       ${s.asset?`<div class="it-asset">\uD83C\uDFAC ${s.asset}</div>`:''}
-      <div class="it-act"><button class="tbtn" data-cap="${i}">Copy caption</button>
+      <div class="it-act admin-only"><button class="tbtn" data-cap="${i}">Copy caption</button>
       ${done?`<button class="tbtn" data-undo="${i}">Undo</button>`:`<button class="tbtn" data-mark="${i}">Mark posted</button>`}
       <button class="tbtn" data-log="${s.id}">Log engagement</button></div></div>`;
     tl.appendChild(el);
@@ -439,7 +440,7 @@ function renderCharts(){
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,...gridOpts()},y:gridOpts()}}});
   renderFundChart();
 }
-function getFundHist(){try{return JSON.parse(store.get('fundHistory')||'[]')}catch(e){return[]}}
+function getFundHist(){const ls=store.get('fundHistory');if(ls!=null){try{return JSON.parse(ls)}catch(e){}}return (LIVE.data&&LIVE.data.fundHistory)||[]}
 function renderFundChart(){if(!haveChart)return;const h=getFundHist();if(chFund)chFund.destroy();
   chFund=new Chart($('chartFund'),{type:'line',data:{labels:h.length?h.map(x=>{const d=new Date(x.d);return monS[d.getMonth()]+' '+d.getDate()}):['—'],
     datasets:[{label:'Raised',data:h.length?h.map(x=>x.a):[0],borderColor:'#FFDA73',backgroundColor:'rgba(250,99,65,.18)',fill:true,tension:.3,pointBackgroundColor:'#FA6341',pointRadius:4}]},
@@ -452,7 +453,8 @@ function renderMoney(){const{raised,goal}=loadMoney();$('raisedEcho').textConten
   $('lastYearNote').innerHTML=raised>=CONFIG.lastYear?'\uD83C\uDF89 Past last year\u2019s $'+nfmt(CONFIG.lastYear)+' \u2014 raise the goal and announce it!':'Last year: $'+nfmt(CONFIG.lastYear)+' (2nd in the country). $'+nfmt(Math.max(0,CONFIG.lastYear-raised))+' to beat it.';}
 
 function renderPubStamp(){const el=$('pubStamp');if(!el)return;
-  el.innerHTML=LIVE.updated?('Published snapshot for Neil · updated <b>'+LIVE.updated+'</b>'):'Not published yet — tap “Publish for Neil” on the Fundraising tab.';}
+  if(LIVE.updated){el.innerHTML='Updated <b>'+LIVE.updated+'</b>';}
+  else{el.innerHTML=document.body.classList.contains('admin')?'Not published yet — tap “Publish for Neil” on the Fundraising tab.':'';}}
 function renderData(){renderKPIs();renderThemes();renderTimeline();renderPostCards();renderInsights();renderMoney();renderPubStamp();renderCharts();}
 
 $('refUrl').textContent=CONFIG.teamUrl;$('refTags').textContent=CONFIG.hashtags;$('btnTeam').href=CONFIG.teamUrl;
@@ -469,8 +471,9 @@ $('btnEngSave').onclick=()=>{const id=$('engPost').value;const e=getEng();const 
 $('btnSave').onclick=()=>{store.set('raised',String(Math.max(0,+$('inRaised').value||0)));store.set('goal',String(Math.max(0,+$('inGoal').value||0)));renderMoney();renderKPIs();toast('Updated')};
 $('btnPublish').onclick=()=>{const m=loadMoney();let l=0,c=0,s=0,posts=0;SCHEDULE.forEach(p=>{if(hasEng(p.id)){const t=postTotals(p.id);l+=t.l;c+=t.c;s+=t.s;posts++;}});const eng=l+c+s;
   const now=new Date();const stamp=monS[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear()+' '+fmtTime(now);
-  const line='const LIVE = { updated:'+JSON.stringify(stamp)+', raised:'+m.raised+', goal:'+m.goal+', eng:'+eng+', posts:'+posts+' };';
-  copy(line,'Snapshot copied');
+  const postedIds=SCHEDULE.filter(x=>store.get('posted:'+x.id)==='1').map(x=>x.id);
+  const obj={updated:stamp,raised:m.raised,goal:m.goal,eng:eng,posts:posts,data:{engagement:getEng(),posted:postedIds,fundHistory:getFundHist()}};
+  copy('const LIVE = '+JSON.stringify(obj)+';','Snapshot copied');
   $('pubNote').innerHTML='Copied. Open <b>index.html</b> in your repo, replace the line starting <b>const LIVE =</b> near the top with what you just copied, and commit. Neil\u2019s link updates in ~1 min.';};
 $('btnLogFund').onclick=()=>{const{raised}=loadMoney();const h=getFundHist();const today=ymd(new Date());const i=h.findIndex(x=>x.d===today);if(i>=0)h[i].a=raised;else h.push({d:today,a:raised});store.set('fundHistory',JSON.stringify(h));renderFundChart();toast('Logged $'+nfmt(raised))};
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
@@ -483,6 +486,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
   if(b.dataset.copy==='tags')copy(CONFIG.hashtags,'Hashtags copied');
   if(b.dataset.copy==='handles')copy(CONFIG.handles,'Handles copied');});
 
+if(location.hash.indexOf('edit')>-1||location.search.indexOf('edit')>-1)document.body.classList.add('admin');
 tick();renderEngEditor();renderData();setInterval(tick,1000);
 </script>
 </body>
