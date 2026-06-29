@@ -146,6 +146,7 @@ select:focus,input:focus{outline:2px solid var(--slate);outline-offset:1px}
       <div class="kpi o"><div class="n tnum" id="kAvg">0</div><div class="l">Avg / post</div></div>
       <div class="kpi g"><div class="n tnum" id="kRaised">$0</div><div class="l">Raised</div></div>
     </div>
+    <div class="note" id="pubStamp" style="margin:-4px 0 12px;text-align:center"></div>
     <div class="card hero">
       <div class="hlabel"><span class="eyebrow" id="heroEyebrow">Next post in</span><span id="heroFlag"></span></div>
       <div class="cd" id="countdown">
@@ -195,6 +196,10 @@ select:focus,input:focus{outline:2px solid var(--slate);outline-offset:1px}
         <div class="field"><label>Goal $</label><input type="number" id="inGoal" min="0" step="500"></div>
         <button class="btn" id="btnSave">Update</button></div>
       <div class="note" id="saveNote" style="margin-top:10px"></div></div>
+    <div class="card"><h2 class="sec"><span class="eyebrow">Share with Neil</span></h2>
+      <div class="note" style="margin:4px 0 12px">Send him the page link — he sees whatever you last published. To update his view: log your numbers above, tap <b>Publish</b>, paste the copied line into <b>index.html</b> (replace the <b>const LIVE =</b> line near the top) and commit.</div>
+      <button class="btn" id="btnPublish">Publish for Neil</button>
+      <div class="note" id="pubNote" style="margin-top:10px"></div></div>
     <div class="card"><h2 class="sec"><span class="eyebrow">Raised over time</span></h2>
       <div class="note" style="margin:4px 0">Tap "Log today's total" whenever you check, to draw the curve.</div>
       <div class="chartbox sm"><canvas id="chartFund"></canvas></div>
@@ -216,6 +221,12 @@ select:focus,input:focus{outline:2px solid var(--slate);outline-offset:1px}
 
 <script>
 const HT='#28x28Challenge #SoEveryBODYCanMove #MobilityMatters #DisabilityPrideMonth #YankeBionics';
+/* =====================================================================
+   LIVE NUMBERS (what Neil sees). This is the ONLY line you edit to update
+   his view. In the dashboard: log your numbers, tap "Publish for Neil,"
+   paste what it copies over the line below, and commit. Done.
+   ===================================================================== */
+const LIVE = { updated:null, raised:null, goal:null, eng:null, posts:null };
 const CONFIG={
   teamUrl:'https://charity.pledgeit.org/t/cdyg9rpsjh', goalDefault:8000, lastYear:7710,
   hashtags:HT, handles:'@soeverybodycanmove @sebcmohio @amputeecoalition',
@@ -341,7 +352,8 @@ function tick(){
   }
 }
 
-function renderKPIs(){let l=0,c=0,s=0,posts=0;SCHEDULE.forEach(p=>{if(hasEng(p.id)){const t=postTotals(p.id);l+=t.l;c+=t.c;s+=t.s;posts++;}});const total=l+c+s;
+function renderKPIs(){let l=0,c=0,s=0,posts=0;SCHEDULE.forEach(p=>{if(hasEng(p.id)){const t=postTotals(p.id);l+=t.l;c+=t.c;s+=t.s;posts++;}});let total=l+c+s;
+  if(posts===0&&LIVE.eng!=null){total=+LIVE.eng;posts=+LIVE.posts||0;}
   $('kEng').textContent=nfmt(total);$('kPosts').textContent=posts;$('kAvg').textContent=posts?nfmt(Math.round(total/posts)):'0';
   $('kLikes').textContent=nfmt(l);$('kComments').textContent=nfmt(c);$('kShares').textContent=nfmt(s);$('kRaised').textContent='$'+nfmt(loadMoney().raised);}
 function renderThemes(){$('themesStrip').innerHTML=[1,2,3,4].map(w=>`<div class="theme"><div class="w">Week ${w}</div><div class="n">${CONFIG.themes[w]}</div></div>`).join('')}
@@ -433,13 +445,15 @@ function renderFundChart(){if(!haveChart)return;const h=getFundHist();if(chFund)
     datasets:[{label:'Raised',data:h.length?h.map(x=>x.a):[0],borderColor:'#FFDA73',backgroundColor:'rgba(250,99,65,.18)',fill:true,tension:.3,pointBackgroundColor:'#FA6341',pointRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:gridOpts(),y:{beginAtZero:true,...gridOpts()}}}});}
 
-function loadMoney(){const r=store.get('raised'),g=store.get('goal');return{raised:r!==null?+r:0,goal:g!==null?+g:CONFIG.goalDefault}}
+function loadMoney(){const r=store.get('raised'),g=store.get('goal');const raised=r!==null?+r:(LIVE.raised!=null?+LIVE.raised:0);const goal=g!==null?+g:(LIVE.goal!=null?+LIVE.goal:CONFIG.goalDefault);return{raised,goal}}
 function renderMoney(){const{raised,goal}=loadMoney();$('raisedEcho').textContent=nfmt(raised);$('goalEcho').textContent=nfmt(goal);
   const pct=goal>0?Math.min(100,Math.round(raised/goal*100)):0;$('pct').textContent=pct+'%';$('barFill').style.width=pct+'%';
   $('inRaised').value=raised;$('inGoal').value=goal;
   $('lastYearNote').innerHTML=raised>=CONFIG.lastYear?'\uD83C\uDF89 Past last year\u2019s $'+nfmt(CONFIG.lastYear)+' \u2014 raise the goal and announce it!':'Last year: $'+nfmt(CONFIG.lastYear)+' (2nd in the country). $'+nfmt(Math.max(0,CONFIG.lastYear-raised))+' to beat it.';}
 
-function renderData(){renderKPIs();renderThemes();renderTimeline();renderPostCards();renderInsights();renderMoney();renderCharts();}
+function renderPubStamp(){const el=$('pubStamp');if(!el)return;
+  el.innerHTML=LIVE.updated?('Published snapshot for Neil · updated <b>'+LIVE.updated+'</b>'):'Not published yet — tap “Publish for Neil” on the Fundraising tab.';}
+function renderData(){renderKPIs();renderThemes();renderTimeline();renderPostCards();renderInsights();renderMoney();renderPubStamp();renderCharts();}
 
 $('refUrl').textContent=CONFIG.teamUrl;$('refTags').textContent=CONFIG.hashtags;$('btnTeam').href=CONFIG.teamUrl;
 $('saveNote').textContent=storageWorks?'Saved on this device. Persists when deployed (e.g. GitHub Pages).':'Preview note: saving is in-memory here; it persists once opened as a real page.';
@@ -453,6 +467,11 @@ $('btnEngSave').onclick=()=>{const id=$('engPost').value;const e=getEng();const 
   CONFIG.platforms.forEach(p=>{const u=document.querySelector(`[data-f="${p.k}-u"]`).value.trim();const l=+document.querySelector(`[data-f="${p.k}-l"]`).value||0;const c=+document.querySelector(`[data-f="${p.k}-c"]`).value||0;const s=+document.querySelector(`[data-f="${p.k}-s"]`).value||0;if(u||l||c||s)rec[p.k]={u,l,c,s};else delete rec[p.k];});
   e[id]=rec;setEng(e);toast('Engagement saved');renderData();renderEngEditor(id);};
 $('btnSave').onclick=()=>{store.set('raised',String(Math.max(0,+$('inRaised').value||0)));store.set('goal',String(Math.max(0,+$('inGoal').value||0)));renderMoney();renderKPIs();toast('Updated')};
+$('btnPublish').onclick=()=>{const m=loadMoney();let l=0,c=0,s=0,posts=0;SCHEDULE.forEach(p=>{if(hasEng(p.id)){const t=postTotals(p.id);l+=t.l;c+=t.c;s+=t.s;posts++;}});const eng=l+c+s;
+  const now=new Date();const stamp=monS[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear()+' '+fmtTime(now);
+  const line='const LIVE = { updated:'+JSON.stringify(stamp)+', raised:'+m.raised+', goal:'+m.goal+', eng:'+eng+', posts:'+posts+' };';
+  copy(line,'Snapshot copied');
+  $('pubNote').innerHTML='Copied. Open <b>index.html</b> in your repo, replace the line starting <b>const LIVE =</b> near the top with what you just copied, and commit. Neil\u2019s link updates in ~1 min.';};
 $('btnLogFund').onclick=()=>{const{raised}=loadMoney();const h=getFundHist();const today=ymd(new Date());const i=h.findIndex(x=>x.d===today);if(i>=0)h[i].a=raised;else h.push({d:today,a:raised});store.set('fundHistory',JSON.stringify(h));renderFundChart();toast('Logged $'+nfmt(raised))};
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.cap!==undefined)copy(SCHEDULE[+b.dataset.cap].caption,'Caption copied');
